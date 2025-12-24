@@ -6,6 +6,9 @@ metadata:
   labels:
     app.kubernetes.io/name: admin-api
     project: ic2
+  annotations:
+    # 确保 Traefik 识别
+    kubernetes.io/ingress.class: traefik
 spec:
   ingressClassName: traefik
   rules:
