@@ -1,0 +1,21 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+resources:
+  - ../../base
+
+patches:
+  - path: patch-resources.yaml
+    target:
+      kind: Deployment
+      name: web-em
+  - path: ingress-traefik-patch.yaml
+    target:
+      kind: Ingress
+      name: web-ingress
+
+# ！！！ 镜像替换：使用 nginx:alpine
+images:
+  - name: ic2-web-image
+    newName: nginx
+    newTag: alpine

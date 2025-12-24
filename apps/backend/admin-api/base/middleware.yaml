@@ -1,0 +1,11 @@
+# apps/backend/admin-api/base/middleware.yaml
+apiVersion: traefik.io/v1alpha1
+kind: Middleware
+metadata:
+  name: admin-strip-prefix
+  labels:
+    app.kubernetes.io/name: admin-api
+spec:
+  stripPrefix:
+    prefixes:
+      - /admin

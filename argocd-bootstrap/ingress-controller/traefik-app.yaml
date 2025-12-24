@@ -1,0 +1,50 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: traefik-ingress
+  namespace: argocd
+spec:
+  project: default
+  source:
+    chart: traefik
+    repoURL: https://traefik.github.io/charts
+    targetRevision: 26.0.0
+    helm:
+      values: |
+        deployment:
+          replicas: 1
+        resources:
+          requests:
+            cpu: "100m"
+            memory: "50Mi"
+          limits:
+            memory: "150Mi"
+        service:
+          type: NodePort
+        ports:
+          web:
+            nodePort: 30080
+          websecure:
+            nodePort: 30443
+        # ----------------------------------------
+        # 关键配置：确保 admin-api 能正常工作
+        # ----------------------------------------
+        ingressClass:
+          enabled: true
+          isDefaultClass: true
+        providers:
+          kubernetesCRD:
+            enabled: true      # 必须开启，否则 Middleware 不生效
+            allowCrossNamespace: true # 允许跨命名空间引用中间件(可选，但推荐)
+          kubernetesIngress:
+            enabled: true
+        # ----------------------------------------
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: traefik
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true

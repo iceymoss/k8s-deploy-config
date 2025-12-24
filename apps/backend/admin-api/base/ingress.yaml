@@ -1,0 +1,26 @@
+# apps/backend/admin-api/base/admin-api-ingress.yaml
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: admin-api-ingress
+  labels:
+    app.kubernetes.io/name: admin-api
+    project: ic2
+  annotations:
+    kubernetes.io/ingress.class: traefik
+    # ！！！核心修改：引用去除前缀的中间件
+    # 格式：<最终部署的namespace>-<middleware名字>@kubernetescrd
+    traefik.ingress.kubernetes.io/router.middlewares: backend-admin-strip-prefix@kubernetescrd
+spec:
+  ingressClassName: traefik
+  rules:
+    - http:
+        paths:
+          # 定义基于 /admin 的路由
+          - path: /admin
+            pathType: Prefix
+            backend:
+              service:
+                name: admin-api
+                port:
+                  number: 80

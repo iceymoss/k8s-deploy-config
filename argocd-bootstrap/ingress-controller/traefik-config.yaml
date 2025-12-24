@@ -1,0 +1,25 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: traefik-config
+  namespace: argocd
+  # 加上 Finalizer 是个好习惯，删除 App 时会自动联级删除关联资源
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  project: default
+  source:
+    # 1. 填入你的真实仓库地址
+    repoURL: https://github.com/iceymoss/k8s-deploy-config.git
+    # 2. 明确指定监听 main 分支
+    targetRevision: main
+    path: apps/infrastructure/traefik/overlays/development
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: traefik
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true # 确保 traefik 命名空间存在

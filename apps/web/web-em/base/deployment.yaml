@@ -1,0 +1,33 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: web-em
+  labels:
+    app.kubernetes.io/name: web-em
+    app.kubernetes.io/instance: ic2-web-em
+    project: ic2
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: web-em
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: web-em
+    spec:
+      containers:
+        - name: web-em-container
+          # 占位符镜像，在 overlays 中替换
+          image: ic2-web-image
+          ports:
+            - containerPort: 80
+              name: http-web
+          resources:
+            # Nginx 非常省资源，适配 1G 节点
+            limits:
+              memory: "32Mi"
+              cpu: "50m"
+            requests:
+              memory: "10Mi"
+              cpu: "5m"
