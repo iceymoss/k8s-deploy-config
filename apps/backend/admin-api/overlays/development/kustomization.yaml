@@ -1,3 +1,25 @@
+#apiVersion: kustomize.config.k8s.io/v1beta1
+#kind: Kustomization
+#
+#resources:
+#  - ../../base
+#
+#patches:
+#  - path: patch-resources.yaml
+#    target:
+#      kind: Deployment
+#      name: admin-api
+#  - path: ingress-traefik-patch.yaml
+#    target:
+#      kind: Ingress
+#      name: admin-api-ingress
+#
+## ！！！ 核心调整：镜像替换策略
+#images:
+#  - name: ic2-admin-api-image # 对应 Base 中的占位符
+#    newName: traefik/whoami   # 替换为真实的轻量级镜像
+#    newTag: latest            # 替换 Tag
+
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 
@@ -9,13 +31,22 @@ patches:
     target:
       kind: Deployment
       name: admin-api
+
+  # 1. 应用常规补丁 (修改 Host 和 Path)
   - path: ingress-traefik-patch.yaml
     target:
       kind: Ingress
       name: admin-api-ingress
 
-# ！！！ 核心调整：镜像替换策略
+  # 2. ！！！新增：使用 JSON Patch 语法专门删除 Annotation
+  - target:
+      kind: Ingress
+      name: admin-api-ingress
+    patch: |-
+      - op: remove
+        path: /metadata/annotations/traefik.ingress.kubernetes.io~1router.middlewares
+
 images:
-  - name: ic2-admin-api-image # 对应 Base 中的占位符
-    newName: traefik/whoami   # 替换为真实的轻量级镜像
-    newTag: latest            # 替换 Tag
+  - name: ic2-admin-api-image
+    newName: traefik/whoami
+    newTag: latest

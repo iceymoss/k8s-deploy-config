@@ -3,14 +3,14 @@ apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: admin-api-ingress
+  # 这里不要写 annotations: null，直接删掉这一块
 spec:
   rules:
-    # 假设开发环境大家共用一个域名，靠路径区分
-    # 或者 dev.test.com 下面也有 /admin
     - host: dev.admin.test.com
       http:
         paths:
-          - path: /admin
+          # 只修改路径为根路径 /
+          - path: /
             pathType: Prefix
             backend:
               service:
