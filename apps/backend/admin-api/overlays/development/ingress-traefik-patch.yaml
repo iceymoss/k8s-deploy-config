@@ -3,12 +3,14 @@ apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: admin-api-ingress
+  namespace: backend
+  # annotations:  <-- 如果只剩这一行也没关系，或者整个删掉
 spec:
+  # ingressClassName: traefik  <-- 这一行一定要删掉！
   rules:
     - host: dev.admin.test.com
       http:
         paths:
-          # 只修改路径为根路径 /
           - path: /
             pathType: Prefix
             backend:
