@@ -18,4 +18,4 @@ patches:
 images:
   - name: ic2-admin-api-image # 对应 Base 中的占位符
     newName: iceymoss/go-web    # 替换为真实的轻量级镜像
-    newTag: 1.0            # 替换 Tag
+    newTag: "1.0"            # 替换 Tag
