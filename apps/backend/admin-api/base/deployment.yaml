@@ -23,13 +23,13 @@ spec:
           # ！！！ 关键：这是占位符，不是实际地址
           image: ic2-admin-api-image
           ports:
-            - containerPort: 80 # whoami 默认端口
+            - containerPort: 8080
               name: http-admin-api
           resources:
             # 适配 1G 内存节点的 Base 配置
             limits:
-              memory: "64Mi"
-              cpu: "100m"
+              memory: "128Mi"
+              cpu: "200m"
             requests:
-              memory: "32Mi"
-              cpu: "10m"
+              memory: "64Mi"
+              cpu: "20m"
