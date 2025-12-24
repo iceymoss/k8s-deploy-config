@@ -6,17 +6,12 @@ metadata:
   labels:
     app.kubernetes.io/name: admin-api
     project: ic2
-  annotations:
-    kubernetes.io/ingress.class: traefik
-    # ！！！核心修改：引用去除前缀的中间件
-    # 格式：<最终部署的namespace>-<middleware名字>@kubernetescrd
-    traefik.ingress.kubernetes.io/router.middlewares: backend-admin-strip-prefix@kubernetescrd
 spec:
   ingressClassName: traefik
   rules:
-    - http:
+    - host: dev.admin.test.com
+      http:
         paths:
-          # 定义基于 /admin 的路由
           - path: /admin
             pathType: Prefix
             backend:

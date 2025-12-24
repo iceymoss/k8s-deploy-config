@@ -3,7 +3,6 @@ apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: admin-api-ingress
-  # 这里不要写 annotations: null，直接删掉这一块
 spec:
   rules:
     - host: dev.admin.test.com
