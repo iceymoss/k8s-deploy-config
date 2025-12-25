@@ -1,0 +1,39 @@
+# backend/ingress/base/backend-ingress.yaml
+# shared backend api service ingress configuration
+# This ingress resource is used to centrally manage the ingress of all API services under the backend namespace
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: backend-api-ingress
+  namespace: backend
+  labels:
+    app.kubernetes.io/name: backend-api-ingress
+    project: ic2
+  annotations:
+    # ensure Traefik Ingress Controller recognition
+    kubernetes.io/ingress.class: traefik
+spec:
+  ingressClassName: traefik
+  rules:
+    # Default rule: Differentiate between different services by path prefixes
+    # The actual environment-specific configuration, such as host, is overridden by patches in overlays
+    - host: api.dev.ic2.com
+      http:
+        paths:
+          # The path to the EM service
+          - path: /admin/
+            pathType: Prefix
+            backend:
+              service:
+                name: hello-api
+                port:
+                  number: 80
+          # The path to the Admin API service
+          - path: /hello/
+            pathType: Prefix
+            backend:
+              service:
+                name: admin-api
+                port:
+                  number: 80
+

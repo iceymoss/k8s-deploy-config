@@ -9,10 +9,10 @@ patches:
     target:
       kind: Deployment
       name: admin-api
-  - path: ingress-traefik-patch.yaml
-    target:
-      kind: Ingress
-      name: admin-api-ingress
+#  - path: ingress-traefik-patch.yaml
+#    target:
+#      kind: Ingress
+#      name: admin-api-ingress
 
 # ！！！ 核心调整：镜像替换策略
 images:

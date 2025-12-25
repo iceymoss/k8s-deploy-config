@@ -1,0 +1,30 @@
+# backend/ingress/overlays/development/ingress-traefik-patch.yaml
+# Ingress patch configuration for the Development environment
+# Add a dev environment-specific host configuration for the shared backend ingress
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: backend-api-ingress
+spec:
+  rules:
+    # The development environment uses a unified API domain name
+    - host: api.dev.ic2.com  # Unified API domain name for your development environment
+      http:
+        paths:
+          # EM service path：api.dev.ic2.com/em
+          - path: /hello/
+            pathType: Prefix
+            backend:
+              service:
+                name: hello-api
+                port:
+                  number: 80
+          # Admin API service path：api.dev.ic2.com/admin
+          - path: /admin/
+            pathType: Prefix
+            backend:
+              service:
+                name: admin-api
+                port:
+                  number: 80
+
