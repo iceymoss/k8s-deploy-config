@@ -1,23 +1,19 @@
 apiVersion: argoproj.io/v1alpha1
-kind: Application
+kind: ApplicationSet         # <--- 必须改成 ApplicationSet !!!
 metadata:
-  name: dev-admin-api
+  name: backend-apps-dev     # <--- 建议改个名，这是生成器的名字
   namespace: argocd
-  finalizers:
-    - resources-finalizer.argocd.argoproj.io
+  # finalizers 在 ApplicationSet 中通常不需要，或者有不同的 finalizer，建议先去掉避免干扰
 spec:
   generators:
     - git:
         repoURL: https://github.com/iceymoss/k8s-deploy-config.git
-        revision: master # The development environment listens to the develop branch
+        revision: master
         directories:
-          # scanning overlays/development directory
-          # 通配符会自动发现所有服务，包括 ingress（共享的 backend ingress 配置）
           - path: apps/backend/*/overlays/development
-
   template:
     metadata:
-      # Final attempt: Use Git Generator's most straightforward array reference {{path[N]}}
+      # 这个 name 是生成的 Application 的名字，保持原样即可
       name: "dev-{{path[2]}}"
       labels:
         environment: development
@@ -26,10 +22,11 @@ spec:
       project: default
       source:
         repoURL: https://github.com/iceymoss/k8s-deploy-config.git
-        targetRevision: master # use the develop branch as the source
+        targetRevision: master
         path: "{{path}}"
       destination:
         namespace: backend
+        server: https://kubernetes.default.svc # 加上这个更规范
       syncPolicy:
         automated:
           prune: true
