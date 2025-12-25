@@ -1,0 +1,22 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: tcp-echo-demo
+  namespace: backend
+  labels:
+    app: tcp-echo
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: tcp-echo
+  template:
+    metadata:
+      labels:
+        app: tcp-echo
+    spec:
+      containers:
+        - name: proxy
+          image: iceymoss/tcp-echo:1.0
+          ports:
+            - containerPort: 3333

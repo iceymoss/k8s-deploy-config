@@ -1,0 +1,17 @@
+apiVersion: traefik.io/v1alpha1
+kind: IngressRouteTCP
+metadata:
+  name: tcp-echo-route
+  namespace: backend
+spec:
+  entryPoints:
+    - mytcp   # 对应在 traefik-app.yaml 里定义的 entrypoint 名字
+  routes:
+    - match: HostSNI(`*`) # 关键！非 TLS 的 TCP 转发必须用 *
+      services:
+        - name: tcp-echo-service
+          port: 3333
+#  在 HTTP 中，我们可以根据 Host: abc.com 头来区分流量。
+#  在纯 TCP (非 TLS) 中，数据是加密的或者二进制流，Traefik 看不到域名信息。所以它无法根据域名做路由，
+#  只能“只要是从这个端口进来的，全转给后端”。
+#  所以这里必须写 *。

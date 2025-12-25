@@ -22,6 +22,8 @@ spec:
         additionalArguments:
           - "--accesslog=true"
           - "--accesslog.format=json"
+          # 定义一个叫 'my-tcp-entrypoint' 的入口，监听 9999 端口
+          - "--entrypoints.mytcp.address=:9999/tcp"
         
         # 4. 资源限制
         resources:
@@ -31,7 +33,7 @@ spec:
           limits:
             memory: "150Mi"
         
-        # 5. 端口暴露 (Web, HTTPS, 和 Dashboard)
+        # 5. 端口暴露 (Web, HTTPS, Dashboard和tcp)
         service:
           type: NodePort
         ports:
@@ -39,7 +41,14 @@ spec:
             nodePort: 30080
           websecure:
             nodePort: 30443
-          # 【新增】这里加上 dashboard 端口，方便你直接访问面板
+          # Traefik Service 暴露 9999 端口
+          mytcp:
+            port: 9999
+            expose: true
+            exposedPort: 9999
+            protocol: TCP
+            nodePort: 30999  # 固定对外暴露的 NodePort 端口
+          # 这里加上 dashboard 端口，方便直接访问面板
           traefik:
             port: 9000
             expose: true
