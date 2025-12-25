@@ -4,9 +4,7 @@ kind: Ingress
 metadata:
   name: admin-api-ingress
   namespace: backend
-  # annotations:  <-- 如果只剩这一行也没关系，或者整个删掉
 spec:
-  # ingressClassName: traefik  <-- 这一行一定要删掉！
   rules:
     - host: dev.api.test.com
       http:
