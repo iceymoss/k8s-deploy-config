@@ -11,6 +11,7 @@ spec:
     targetRevision: 26.0.0
     helm:
       values: |
+        fullnameOverride: "traefik"
         deployment:
           replicas: 3
         additionalArguments:
