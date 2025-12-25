@@ -6,22 +6,33 @@ metadata:
   finalizers:
     - resources-finalizer.argocd.argoproj.io
 spec:
-  project: default
-  source:
-    repoURL: https://github.com/iceymoss/k8s-deploy-config.git
-    # -------------------------------------------------
-    # 修改点：将 HEAD 改为具体的 Git 分支名 (如 main)
-    # 这样 ArgoCD 就会死死盯着 main 分支的最新提交
-    # -------------------------------------------------
-    targetRevision: master
-    path: apps/backend/admin-api/overlays/development
-  destination:
-    server: https://kubernetes.default.svc
-    # 部署到 backend 命名空间
-    namespace: backend
-  syncPolicy:
-    automated:
-      prune: true
-      selfHeal: true
-    syncOptions:
-      - CreateNamespace=true # 如果 backend 命名空间不存在，自动创建
+  generators:
+    - git:
+        repoURL: https://github.com/iceymoss/k8s-deploy-config.git
+        revision: master # The development environment listens to the develop branch
+        directories:
+          # scanning overlays/development directory
+          # 通配符会自动发现所有服务，包括 ingress（共享的 backend ingress 配置）
+          - path: apps/backend/*/overlays/development
+
+  template:
+    metadata:
+      # Final attempt: Use Git Generator's most straightforward array reference {{path[N]}}
+      name: "dev-{{path[2]}}"
+      labels:
+        environment: development
+        project: ic2
+    spec:
+      project: default
+      source:
+        repoURL: https://github.com/iceymoss/k8s-deploy-config.git
+        targetRevision: master # use the develop branch as the source
+        path: "{{path}}"
+      destination:
+        namespace: backend
+      syncPolicy:
+        automated:
+          prune: true
+          selfHeal: true
+        syncOptions:
+          - CreateNamespace=true
