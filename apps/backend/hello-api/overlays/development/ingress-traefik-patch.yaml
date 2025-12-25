@@ -8,7 +8,7 @@ metadata:
 spec:
   # ingressClassName: traefik  <-- 这一行一定要删掉！
   rules:
-    - host: dev.hello.test.com
+    - host: dev.api.test.com
       http:
         paths:
           - path: /hello/

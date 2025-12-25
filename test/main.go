@@ -187,8 +187,12 @@ func main() {
 	wg := sync.WaitGroup{}
 	urlList := []string{
 		"http://dev.web.test.com:30080/",
-		"http://dev.hello.test.com:30080/hello/user",
-		"http://dev.admin.test.com/:30080/admin/user",
+		//"http://dev.hello.test.com:30080/hello/user",
+		//"http://dev.admin.test.com/:30080/admin/user",
+		//"http://api.dev.ic2.com:30080/hello/user",
+		//"http://api.dev.ic2.com:30080/admin/user",
+		"http://dev.api.test.com:30080/admin/user",
+		"http://dev.api.test.com:30080/hello/user",
 	}
 	for i := 0; i < len(urlList); i++ {
 		wg.Add(1)
@@ -196,8 +200,8 @@ func main() {
 			url := urlList[i]
 			defer wg.Done()
 			// 这里可以修改并发数和总请求数
-			concurrency := 30      // 并发数
-			totalRequests := 10000 // 总请求数
+			concurrency := 10    // 并发数
+			totalRequests := 100 // 总请求数
 
 			fmt.Printf("开始压力测试:\n")
 			fmt.Printf("URL: %s\n", url)
