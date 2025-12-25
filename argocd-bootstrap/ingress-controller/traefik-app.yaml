@@ -12,7 +12,7 @@ spec:
     helm:
       values: |
         deployment:
-          replicas: 1
+          replicas: 3
         additionalArguments:
           - "--accesslog=true"
           - "--accesslog.format=json"  # 可选，JSON 格式
