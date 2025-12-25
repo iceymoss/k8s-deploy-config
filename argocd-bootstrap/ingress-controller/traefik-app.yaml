@@ -13,6 +13,9 @@ spec:
       values: |
         deployment:
           replicas: 1
+        additionalArguments:
+          - "--accesslog=true"
+          - "--accesslog.format=json"  # 可选，JSON 格式
         resources:
           requests:
             cpu: "100m"
