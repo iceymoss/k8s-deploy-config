@@ -6,7 +6,7 @@ metadata:
   labels:
     app: tcp-echo
 spec:
-  replicas: 1
+  replicas: 10
   selector:
     matchLabels:
       app: tcp-echo
