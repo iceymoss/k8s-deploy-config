@@ -12,7 +12,7 @@ spec:
     helm:
       values: |
         deployment:
-          replicas: 3
+          replicas: 1
         resources:
           requests:
             cpu: "100m"
