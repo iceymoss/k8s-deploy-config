@@ -76,6 +76,20 @@
 
 **适用对象**: DevOps 工程师、Kubernetes 管理员
 
+---
+
+### [k3d 端口映射解决方案](./k3d-port-mapping-solution.md) | [中文版](./k3d-端口映射解决方案.md)
+
+**k3d 集群端口映射解决方案文档**，包含：
+
+- ✅ 问题背景和原因分析
+- ✅ 方案一：kubectl port-forward（仅 TCP）
+- ✅ 方案二：Docker 外挂网关（TCP + UDP，推荐）
+- ✅ 架构图和方案对比
+- ✅ 故障排查和最佳实践
+
+**适用对象**: DevOps 工程师、本地开发人员
+
 ## 🚀 快速开始
 
 1. 查看 [架构与配置流向文档](./architecture-and-configuration-flow.md) 了解整体架构

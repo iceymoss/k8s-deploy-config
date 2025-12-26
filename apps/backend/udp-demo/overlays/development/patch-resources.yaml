@@ -23,3 +23,8 @@ spec:
             limits:
               memory: "128Mi"
               cpu: "100m"
+          env:
+            - name: PROXY_TARGET
+              # 这里填 hello-api 的 Service 地址
+              # 格式: <service-name>.<namespace>:端口
+              value: "hello-api.backend:80"

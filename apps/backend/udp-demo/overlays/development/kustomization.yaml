@@ -37,4 +37,4 @@ patches:
 images:
   - name: udp-echo-server      # 1. 找到 Base 里叫这个名字的 image 字段
     newName: iceymoss/udp-echo # 2. 将其地址修改为真实的 Docker Hub 地址
-    newTag: "1.0"              # 3. 指定具体的 Tag
+    newTag: "2.0"              # 3. 指定具体的 Tag
