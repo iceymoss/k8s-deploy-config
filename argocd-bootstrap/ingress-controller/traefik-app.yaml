@@ -24,6 +24,8 @@ spec:
           - "--accesslog.format=json"
           # 定义一个叫 'my-tcp-entrypoint' 的入口，监听 9999 端口
           - "--entrypoints.mytcp.address=:9999/tcp"
+          # 定义一个叫 'my-udp-entrypoint' 的入口，监听 9998 端口
+          - "--entrypoints.myudp.address=:9998/udp"
         
         # 4. 资源限制
         resources:
@@ -48,6 +50,12 @@ spec:
             exposedPort: 9999
             protocol: TCP
             nodePort: 30999  # 固定对外暴露的 NodePort 端口
+          myudp:
+            port: 9998        # Traefik 内部监听端口
+            expose: true
+            exposedPort: 9998
+            protocol: UDP     # 必须声明 UDP
+            nodePort: 30998   # 对外访问端口
           # 这里加上 dashboard 端口，方便直接访问面板
           traefik:
             port: 9000
