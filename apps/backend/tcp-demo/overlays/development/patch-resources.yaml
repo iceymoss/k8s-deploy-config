@@ -53,3 +53,8 @@ spec:
 
               # 如果容器尝试使用超过 100m (0.1 核) 的 CPU，它会被操作系统限流 (Throttling)，变慢但不会死。
               cpu: "100m"
+          env:
+            - name: PROXY_TARGET
+              # 这里填 hello-api 的 Service 地址
+              # 格式: <service-name>.<namespace>:端口
+              value: "hello-api.backend:80"

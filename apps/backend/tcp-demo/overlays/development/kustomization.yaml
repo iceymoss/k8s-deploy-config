@@ -48,4 +48,4 @@ patches:
 images:
   - name: tcp-echo-server # 对应 Base 中的占位符
     newName: iceymoss/tcp-echo    # 替换对应的镜像
-    newTag: "1.0"            # 替换 Tag
+    newTag: "2.0"            # 替换 Tag
