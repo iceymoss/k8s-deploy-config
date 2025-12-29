@@ -1,0 +1,34 @@
+role: Agent
+
+# 自动采集 K8s 所有 Pod 的日志
+customConfig:
+  sources:
+    kubernetes_logs:
+      type: kubernetes_logs
+
+  transforms:
+    # 解析 Go 应用输出的 JSON
+    parse_json:
+      type: remap
+      inputs: ["kubernetes_logs"]
+      source: |
+        # 尝试解析 JSON，如果不是 JSON (比如系统日志) 则保持原样
+        . = parse_json(.message) ?? .
+
+  sinks:
+    openobserve:
+      type: http
+      inputs: ["parse_json"]
+      uri: "http://openobserve.openobserve.svc.cluster.local:5080/api/default/_json"
+      # 注意：
+      # 1. uri 使用的是 k8s 内部域名，不需要走 ingress 的 10000 端口
+      # 2. 如果你的组织 ID 不是 default，请修改 URL 中间部分！
+      encoding:
+        codec: json
+      auth:
+        strategy: basic
+        user: "root@example.com" # 或者你的 ic2@deepcodify.com
+        password: "ComplexPassWord" # 你的密码
+      batch:
+        max_events: 1000  # 攒够 1000 条发一次 (ELK 的核心优势：批处理)
+        timeout_secs: 1   # 最多等 1 秒
