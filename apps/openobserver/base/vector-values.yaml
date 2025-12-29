@@ -15,21 +15,22 @@ customConfig:
       type: kubernetes_logs
 
   transforms:
-    # [核心修改] 这里合并了过滤和解析逻辑
     parse_and_filter:
       type: remap
-      inputs: ["kubernetes_logs"]
+      inputs: [ "kubernetes_logs" ]
       source: |
-        # 1. 获取命名空间
-        .k8s_ns = .kubernetes.namespace_name || "unknown"
-
-        # 2. 【黑名单配置】在这里添加你不想要的命名空间
-        # 特别注意：一定要屏蔽 openobserve 自己，否则会产生死循环（自己采自己的日志）
-        if includes(["kube-system", "argocd", "openobserve", "ingress-nginx", "local-path-storage", ""], .k8s_ns) {
+        # --- 1. 修正：获取命名空间的逻辑 ---
+        # 你的日志显示字段名是 kubernetes_pod_namespace
+        # 为了保险，我们尝试读取标准嵌套字段(.kubernetes.pod_namespace)和扁平字段(.kubernetes_pod_namespace)
+        .k8s_ns = .kubernetes.pod_namespace || .kubernetes_pod_namespace || "unknown"
+        
+        # --- 2. 黑名单过滤 ---
+        # 只要抓取到了正确的 k8s_ns (比如 "openobserve")，这里就能拦截成功
+        if includes(["kube-system", "argocd", "openobserve", "ingress-nginx", "local-path-storage", "kube-public", "kube-node-lease"], .k8s_ns) {
             abort
         }
-
-        # 3. JSON 解析 (针对你的 Go 业务)
+        
+        # --- 3. JSON 解析 ---
         . = parse_json(.message) ?? .
 
   sinks:
@@ -38,13 +39,13 @@ customConfig:
       # 注意：这里的 inputs 名字要和上面 transforms 的名字一致
       inputs: ["parse_and_filter"]
       # 保持你的配置不变
-      uri: "http://openobserve.openobserve.svc.cluster.local:5080/api/iceymoss/_json"
+      uri: "http://openobserve.openobserve.svc.cluster.local:5080/api/default/iceymoss/_json"
       encoding:
         codec: json
       auth:
         strategy: basic
         user: "ice_moss@163.com"
-        password: "" # 记得填回你的密码
+        password: "i" # 记得填回你的密码
       batch:
         max_events: 1000
         timeout_secs: 1
