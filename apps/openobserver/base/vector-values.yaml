@@ -27,7 +27,7 @@ customConfig:
         codec: json
       auth:
         strategy: basic
-        user: "root@example.com" # 或者你的 ic2@deepcodify.com
+        user: "root@example.com" # 或者你的
         password: "ComplexPassWord" # 你的密码
       batch:
         max_events: 1000  # 攒够 1000 条发一次 (ELK 的核心优势：批处理)
