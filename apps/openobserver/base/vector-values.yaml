@@ -25,7 +25,7 @@ customConfig:
 
         # 2. 【黑名单配置】在这里添加你不想要的命名空间
         # 特别注意：一定要屏蔽 openobserve 自己，否则会产生死循环（自己采自己的日志）
-        if includes(["kube-system", "argocd", "openobserve", "ingress-nginx", "local-path-storage"], .k8s_ns) {
+        if includes(["kube-system", "argocd", "openobserve", "ingress-nginx", "local-path-storage", ""], .k8s_ns) {
             abort
         }
 
