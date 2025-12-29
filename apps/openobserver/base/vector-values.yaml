@@ -1,11 +1,11 @@
 role: Agent
 
-# [核心修复] 既然是抓取日志的 Agent，不需要对外提供服务，直接禁用 Service
+# 禁用 Service (保持你之前的正确配置)
 service:
   enabled: false
 
 customConfig:
-  data_dir: /srv/logs/vector-data-dir
+  data_dir: /vector-data-dir
   api:
     enabled: true
     address: 0.0.0.0:8686
@@ -15,27 +15,36 @@ customConfig:
       type: kubernetes_logs
 
   transforms:
-    # 解析 JSON 日志 (这对你的 Go App 至关重要)
-    parse_json:
+    # [核心修改] 这里合并了过滤和解析逻辑
+    parse_and_filter:
       type: remap
       inputs: ["kubernetes_logs"]
       source: |
+        # 1. 获取命名空间
+        .k8s_ns = .kubernetes.namespace_name || "unknown"
+
+        # 2. 【黑名单配置】在这里添加你不想要的命名空间
+        # 特别注意：一定要屏蔽 openobserve 自己，否则会产生死循环（自己采自己的日志）
+        if includes(["kube-system", "argocd", "openobserve", "ingress-nginx", "local-path-storage"], .k8s_ns) {
+            abort
+        }
+
+        # 3. JSON 解析 (针对你的 Go 业务)
         . = parse_json(.message) ?? .
 
   sinks:
     openobserve:
       type: http
-      inputs: ["parse_json"]
-      # [注意] 请确认下面这个地址
-      # 如果 OpenObserve 和 Vector 在同一个集群的同一个 namespace，用这个没问题
-      # 如果不在同一个 namespace，要改写成 openobserve.openobserve.svc.cluster.local:5080
-      uri: "http://openobserve.openobserve.svc.cluster.local:5080/api/default/_json"
+      # 注意：这里的 inputs 名字要和上面 transforms 的名字一致
+      inputs: ["parse_and_filter"]
+      # 保持你的配置不变
+      uri: "http://openobserve.openobserve.svc.cluster.local:5080/api/iceymoss/_json"
       encoding:
         codec: json
       auth:
         strategy: basic
-        user: "ice_moss@163.com"  # 你的用户名
-        password: ""    # 你的密码
+        user: "ice_moss@163.com"
+        password: "" # 记得填回你的密码
       batch:
         max_events: 1000
         timeout_secs: 1
