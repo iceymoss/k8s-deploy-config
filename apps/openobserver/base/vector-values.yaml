@@ -31,9 +31,18 @@ customConfig:
             abort
         }
 
-        # --- 3. JSON 解析 ---
-        # 只有通过了上面的检查，才会走到这一步解析 JSON
-        . = parse_json(.message) ?? .
+        # --- 3. secure json parsing ---
+        # try parsing message
+        parsed_data, err = parse_json(.message)
+
+        if err == null {
+            # Use merge to "fuse" the parsed fields into the current log
+            # This not only retains the original metadata such as k8s_ns, but also has business fields such as level and op
+            . = merge!(., parsed_data)
+        
+            # Optionally, if you don't want to keep the original message string to save space, you can cancel the comment below
+            # del(.message)
+        }
 
   sinks:
     openobserve:

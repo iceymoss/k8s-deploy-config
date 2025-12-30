@@ -58,7 +58,7 @@ spec:
               value: "" # <--- 在这里修改你的默认密码
             # --- 数据目录 ---
             - name: ZO_DATA_DIR
-              value: "/srv/openobserver/data"
+              value: "/data"
             # --- 遥测选项 (可选关闭) ---
             - name: ZO_TELEMETRY
               value: "false"
