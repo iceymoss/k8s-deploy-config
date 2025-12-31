@@ -44,6 +44,15 @@ customConfig:
             # del(.message)
         }
 
+    # 指标处理 (给指标打上 k8s 节点的标签)
+    # 这一步是为了让你在 OpenObserve 里能区分是哪个 Node 的 CPU
+    process_metrics:
+      type: remap
+      inputs: ["host_metrics"]
+      source: |
+        .tags.node_name = "${VECTOR_SELF_NODE_NAME}"        
+        
+
   sinks:
     openobserve:
       type: http
@@ -61,6 +70,21 @@ customConfig:
         strategy: basic
         user: "ice_moss@163.com"
         password: "" # [部署前请填入密码]
+      batch:
+        max_events: 1000
+        timeout_secs: 1
+
+    # 发送指标 (Metrics)
+    openobserve_metrics:
+      type: prometheus_remote_write
+      inputs: ["process_metrics"]
+      # 指标的专用地址 (注意路径里的 /prometheus/api/v1/write 是固定的)
+      # 这里假设你的 Org ID 是 'default'
+      endpoint: "http://openobserve.openobserve.svc.cluster.local:5080/api/default/prometheus/api/v1/write"
+      auth:
+        strategy: basic
+        user: "ice_moss@163.com"
+        password: "ic2?"
       batch:
         max_events: 1000
         timeout_secs: 1
