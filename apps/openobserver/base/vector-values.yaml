@@ -14,6 +14,11 @@ customConfig:
     kubernetes_logs:
       type: kubernetes_logs
 
+    # 主机指标源 (采集 CPU, 内存, 磁盘, 负载等)
+    host_metrics:
+      type: host_metrics
+      scrape_interval_secs: 10 # 每 10 秒采一次
+
   transforms:
     # [核心修改] 白名单过滤逻辑
     parse_and_whitelist:
@@ -62,7 +67,7 @@ customConfig:
       # [再次提醒] 这里的 URI 必须是你网页上看到的真实 Org ID
       # 之前的教训：iceymoss 可能是错的，网页上可能是 ice_moss_163_com
       # 格式: .../api/<真实ORG_ID>/<流名称>/_json
-      uri: "http://openobserve.openobserve.svc.cluster.local:5080/api/default/iceymoss/_json"
+      uri: "http://openobserve.openobserve.svc.cluster.local:5080/api/iceymoss/default/_json"
 
       encoding:
         codec: json
@@ -80,7 +85,7 @@ customConfig:
       inputs: ["process_metrics"]
       # 指标的专用地址 (注意路径里的 /prometheus/api/v1/write 是固定的)
       # 这里假设你的 Org ID 是 'default'
-      endpoint: "http://openobserve.openobserve.svc.cluster.local:5080/api/default/prometheus/api/v1/write"
+      endpoint: "http://openobserve.openobserve.svc.cluster.local:5080/api/iceymoss/prometheus/api/v1/write"
       auth:
         strategy: basic
         user: "ice_moss@163.com"
