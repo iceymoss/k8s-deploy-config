@@ -12,7 +12,7 @@ import (
 func main() {
 	// ⚠️ 配置目标地址 (K8s Node IP : NodePort)
 	// 请确保这个 IP 是你的 K8s 节点 IP，端口是 Traefik 暴露的 30998
-	serverAddr := "10.4.4.15:30998"
+	serverAddr := "127.0.0.1:30998"
 
 	fmt.Printf("Connecting to UDP server at %s...\n", serverAddr)
 
