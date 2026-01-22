@@ -9,7 +9,7 @@ import (
 )
 
 func main() {
-	serverAddress := "19.32.4.1:30999"
+	serverAddress := "127.0.0.1:30999"
 
 	fmt.Printf("Connecting to %s...\n", serverAddress)
 	conn, err := net.Dial("tcp", serverAddress)
